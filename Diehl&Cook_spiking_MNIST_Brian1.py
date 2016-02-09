@@ -348,10 +348,8 @@ spike_monitors = {}
 spike_counters = {}
 result_monitor = np.zeros((update_interval,n_e))
 
-neuron_groups['e'] = b2.NeuronGroup(n_e*len(population_names), neuron_eqs_e, threshold= v_thresh_e, refractory= refrac_e, reset= scr_e,
-                                   compile = True, freeze = True)
-neuron_groups['i'] = b2.NeuronGroup(n_i*len(population_names), neuron_eqs_i, threshold= v_thresh_i, refractory= refrac_i, reset= v_reset_i,
-                                   compile = True, freeze = True)
+neuron_groups['e'] = b2.NeuronGroup(n_e*len(population_names), neuron_eqs_e, threshold= v_thresh_e, refractory= refrac_e, reset= scr_e)
+neuron_groups['i'] = b2.NeuronGroup(n_i*len(population_names), neuron_eqs_i, threshold= v_thresh_i, refractory= refrac_i, reset= v_reset_i)
 
 
 #------------------------------------------------------------------------------
