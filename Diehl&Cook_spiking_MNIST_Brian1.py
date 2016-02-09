@@ -212,20 +212,6 @@ print 'time needed to load test set:', end - start
 #------------------------------------------------------------------------------
 test_mode = True
 
-b2.set_global_preferences(
-                        defaultclock = b2.Clock(dt=0.5*b2.ms), # The default clock to use if none is provided or defined in any enclosing scope.
-                        useweave = True, # Defines whether or not functions should use inlined compiled C code where defined.
-                        gcc_options = ['-ffast-math -march=native'],  # Defines the compiler switches passed to the gcc compiler.
-                        #For gcc versions 4.2+ we recommend using -march=native. By default, the -ffast-math optimizations are turned on
-                        usecodegen = True,  # Whether or not to use experimental code generation support.
-                        usecodegenweave = True,  # Whether or not to use C with experimental code generation support.
-                        usecodegenstateupdate = True,  # Whether or not to use experimental code generation support on state updaters.
-                        usecodegenthreshold = False,  # Whether or not to use experimental code generation support on thresholds.
-                        usenewpropagate = True,  # Whether or not to use experimental new C propagation functions.
-                        usecstdp = True,  # Whether or not to use experimental new C STDP.
-                       )
-
-
 np.random.seed(0)
 data_path = './'
 if test_mode:
