@@ -12,7 +12,7 @@ import os.path
 import scipy
 import cPickle as pickle
 import brian_no_units  #import it to deactivate unit checking --> This should NOT be done for testing/debugging
-import brian as b
+import brian2 as b2
 from struct import unpack
 from brian import *
 
@@ -125,10 +125,10 @@ def get_2d_input_weights():
 def plot_2d_input_weights():
     name = 'XeAe'
     weights = get_2d_input_weights()
-    fig = b.figure(fig_num, figsize = (18, 18))
-    im2 = b.imshow(weights, interpolation = "nearest", vmin = 0, vmax = wmax_ee, cmap = cmap.get_cmap('hot_r'))
-    b.colorbar(im2)
-    b.title('weights of connection' + name)
+    fig = b2.figure(fig_num, figsize = (18, 18))
+    im2 = b2.imshow(weights, interpolation = "nearest", vmin = 0, vmax = wmax_ee, cmap = cmap.get_cmap('hot_r'))
+    b2.colorbar(im2)
+    b2.title('weights of connection' + name)
     fig.canvas.draw()
     return im2, fig
 
@@ -151,12 +151,12 @@ def plot_performance(fig_num):
     num_evaluations = int(num_examples/update_interval)
     time_steps = range(0, num_evaluations)
     performance = np.zeros(num_evaluations)
-    fig = b.figure(fig_num, figsize = (5, 5))
+    fig = b2.figure(fig_num, figsize = (5, 5))
     fig_num += 1
     ax = fig.add_subplot(111)
     im2, = ax.plot(time_steps, performance) #my_cmap
-    b.ylim(ymax = 100)
-    b.title('Classification performance')
+    b2.ylim(ymax = 100)
+    b2.title('Classification performance')
     fig.canvas.draw()
     return im2, performance, fig_num, fig
 
@@ -209,8 +209,8 @@ print 'time needed to load test set:', end - start
 #------------------------------------------------------------------------------
 test_mode = True
 
-b.set_global_preferences(
-                        defaultclock = b.Clock(dt=0.5*b.ms), # The default clock to use if none is provided or defined in any enclosing scope.
+b2.set_global_preferences(
+                        defaultclock = b2.Clock(dt=0.5*b2.ms), # The default clock to use if none is provided or defined in any enclosing scope.
                         useweave = True, # Defines whether or not functions should use inlined compiled C code where defined.
                         gcc_options = ['-ffast-math -march=native'],  # Defines the compiler switches passed to the gcc compiler.
                         #For gcc versions 4.2+ we recommend using -march=native. By default, the -ffast-math optimizations are turned on
@@ -264,14 +264,14 @@ else:
     save_connections_interval = 10000
     update_interval = 10000
 
-v_rest_e = -65. * b.mV
-v_rest_i = -60. * b.mV
-v_reset_e = -65. * b.mV
-v_reset_i = -45. * b.mV
-v_thresh_e = -52. * b.mV
-v_thresh_i = -40. * b.mV
-refrac_e = 5. * b.ms
-refrac_i = 2. * b.ms
+v_rest_e = -65. * b2.mV
+v_rest_i = -60. * b2.mV
+v_reset_e = -65. * b2.mV
+v_reset_i = -45. * b2.mV
+v_thresh_e = -52. * b2.mV
+v_thresh_i = -40. * b2.mV
+refrac_e = 5. * b2.ms
+refrac_i = 2. * b2.ms
 
 conn_structure = 'dense'
 weight = {}
@@ -283,14 +283,14 @@ save_conns = ['XeAe']
 input_conn_names = ['ee_input']
 recurrent_conn_names = ['ei', 'ie']
 weight['ee_input'] = 78.
-delay['ee_input'] = (0*b.ms,10*b.ms)
-delay['ei_input'] = (0*b.ms,5*b.ms)
+delay['ee_input'] = (0*b2.ms,10*b2.ms)
+delay['ei_input'] = (0*b2.ms,5*b2.ms)
 input_intensity = 2.
 start_input_intensity = input_intensity
 
-tc_pre_ee = 20*b.ms
-tc_post_1_ee = 20*b.ms
-tc_post_2_ee = 40*b.ms
+tc_pre_ee = 20*b2.ms
+tc_post_1_ee = 20*b2.ms
+tc_post_2_ee = 40*b2.ms
 nu_ee_pre =  0.0001      # learning rate
 nu_ee_post = 0.01       # learning rate
 wmax_ee = 1.0
@@ -301,10 +301,10 @@ STDP_offset = 0.4
 if test_mode:
     scr_e = 'v = v_reset_e; timer = 0*ms'
 else:
-    tc_theta = 1e7 * b.ms
-    theta_plus_e = 0.05 * b.mV
+    tc_theta = 1e7 * b2.ms
+    theta_plus_e = 0.05 * b2.mV
     scr_e = 'v = v_reset_e; theta += theta_plus_e; timer = 0*ms'
-offset = 20.0*b.mV
+offset = 20.0*b2.mV
 v_thresh_e = '(v>(theta - offset + ' + str(v_thresh_e) + ')) * (timer>refrac_e)'
 
 
@@ -337,7 +337,7 @@ eqs_stdp_ee = '''
 eqs_stdp_pre_ee = 'pre = 1.; w -= nu_ee_pre * post1'
 eqs_stdp_post_ee = 'post2before = post2; w += nu_ee_post * pre * post2before; post1 = 1.; post2 = 1.'
 
-b.ion()
+b2.ion()
 fig_num = 1
 neuron_groups = {}
 input_groups = {}
@@ -348,9 +348,9 @@ spike_monitors = {}
 spike_counters = {}
 result_monitor = np.zeros((update_interval,n_e))
 
-neuron_groups['e'] = b.NeuronGroup(n_e*len(population_names), neuron_eqs_e, threshold= v_thresh_e, refractory= refrac_e, reset= scr_e,
+neuron_groups['e'] = b2.NeuronGroup(n_e*len(population_names), neuron_eqs_e, threshold= v_thresh_e, refractory= refrac_e, reset= scr_e,
                                    compile = True, freeze = True)
-neuron_groups['i'] = b.NeuronGroup(n_i*len(population_names), neuron_eqs_i, threshold= v_thresh_i, refractory= refrac_i, reset= v_reset_i,
+neuron_groups['i'] = b2.NeuronGroup(n_i*len(population_names), neuron_eqs_i, threshold= v_thresh_i, refractory= refrac_i, reset= v_reset_i,
                                    compile = True, freeze = True)
 
 
@@ -363,43 +363,43 @@ for name in population_names:
     neuron_groups[name+'e'] = neuron_groups['e'].subgroup(n_e)
     neuron_groups[name+'i'] = neuron_groups['i'].subgroup(n_i)
 
-    neuron_groups[name+'e'].v = v_rest_e - 40. * b.mV
-    neuron_groups[name+'i'].v = v_rest_i - 40. * b.mV
+    neuron_groups[name+'e'].v = v_rest_e - 40. * b2.mV
+    neuron_groups[name+'i'].v = v_rest_i - 40. * b2.mV
     if test_mode or weight_path[-8:] == 'weights/':
         neuron_groups['e'].theta = np.load(weight_path + 'theta_' + name + ending + '.npy')
     else:
-        neuron_groups['e'].theta = np.ones((n_e)) * 20.0*b.mV
+        neuron_groups['e'].theta = np.ones((n_e)) * 20.0*b2.mV
 
     print 'create recurrent connections'
     for conn_type in recurrent_conn_names:
         connName = name+conn_type[0]+name+conn_type[1]
         weightMatrix = get_matrix_from_file(weight_path + '../random/' + connName + ending + '.npy')
-        connections[connName] = b.Connection(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]], structure= conn_structure,
+        connections[connName] = b2.Connection(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]], structure= conn_structure,
                                                     state = 'g'+conn_type[0])
         connections[connName].connect(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]], weightMatrix)
 
     if ee_STDP_on:
         if 'ee' in recurrent_conn_names:
-            stdp_methods[name+'e'+name+'e'] = b.STDP(connections[name+'e'+name+'e'], eqs=eqs_stdp_ee, pre = eqs_stdp_pre_ee,
+            stdp_methods[name+'e'+name+'e'] = b2.STDP(connections[name+'e'+name+'e'], eqs=eqs_stdp_ee, pre = eqs_stdp_pre_ee,
                                                            post = eqs_stdp_post_ee, wmin=0., wmax= wmax_ee)
 
     print 'create monitors for', name
-    rate_monitors[name+'e'] = b.PopulationRateMonitor(neuron_groups[name+'e'], bin = (single_example_time+resting_time)/b.second)
-    rate_monitors[name+'i'] = b.PopulationRateMonitor(neuron_groups[name+'i'], bin = (single_example_time+resting_time)/b.second)
-    spike_counters[name+'e'] = b.SpikeCounter(neuron_groups[name+'e'])
+    rate_monitors[name+'e'] = b2.PopulationRateMonitor(neuron_groups[name+'e'], bin = (single_example_time+resting_time)/b2.second)
+    rate_monitors[name+'i'] = b2.PopulationRateMonitor(neuron_groups[name+'i'], bin = (single_example_time+resting_time)/b2.second)
+    spike_counters[name+'e'] = b2.SpikeCounter(neuron_groups[name+'e'])
 
     if record_spikes:
-        spike_monitors[name+'e'] = b.SpikeMonitor(neuron_groups[name+'e'])
-        spike_monitors[name+'i'] = b.SpikeMonitor(neuron_groups[name+'i'])
+        spike_monitors[name+'e'] = b2.SpikeMonitor(neuron_groups[name+'e'])
+        spike_monitors[name+'i'] = b2.SpikeMonitor(neuron_groups[name+'i'])
 
 if record_spikes:
-    b.figure(fig_num)
+    b2.figure(fig_num)
     fig_num += 1
-    b.ion()
-    b.subplot(211)
-    b.raster_plot(spike_monitors['Ae'], refresh=1000*b.ms, showlast=1000*b.ms)
-    b.subplot(212)
-    b.raster_plot(spike_monitors['Ai'], refresh=1000*b.ms, showlast=1000*b.ms)
+    b2.ion()
+    b2.subplot(211)
+    b2.raster_plot(spike_monitors['Ae'], refresh=1000*b2.ms, showlast=1000*b2.ms)
+    b2.subplot(212)
+    b2.raster_plot(spike_monitors['Ai'], refresh=1000*b2.ms, showlast=1000*b2.ms)
 
 
 #------------------------------------------------------------------------------
@@ -415,13 +415,13 @@ for name in input_connection_names:
     for connType in input_conn_names:
         connName = name[0] + connType[0] + name[1] + connType[1]
         weightMatrix = get_matrix_from_file(weight_path + connName + ending + '.npy')
-        connections[connName] = b.Connection(input_groups[connName[0:2]], neuron_groups[connName[2:4]], structure= conn_structure,
+        connections[connName] = b2.Connection(input_groups[connName[0:2]], neuron_groups[connName[2:4]], structure= conn_structure,
                                                     state = 'g'+connType[0], delay=True, max_delay=delay[connType][1])
         connections[connName].connect(input_groups[connName[0:2]], neuron_groups[connName[2:4]], weightMatrix, delay=delay[connType])
 
     if ee_STDP_on:
         print 'create STDP for connection', name[0]+'e'+name[1]+'e'
-        stdp_methods[name[0]+'e'+name[1]+'e'] = b.STDP(connections[name[0]+'e'+name[1]+'e'], eqs=eqs_stdp_ee, pre = eqs_stdp_pre_ee,
+        stdp_methods[name[0]+'e'+name[1]+'e'] = b2.STDP(connections[name[0]+'e'+name[1]+'e'], eqs=eqs_stdp_ee, pre = eqs_stdp_pre_ee,
                                                        post = eqs_stdp_post_ee, wmin=0., wmax= wmax_ee)
 
 
@@ -439,7 +439,7 @@ if do_plot_performance:
     performance_monitor, performance, fig_num, fig_performance = plot_performance(fig_num)
 for i,name in enumerate(input_population_names):
     input_groups[name+'e'].rate = 0
-b.run(0)
+b2.run(0)
 j = 0
 while j < (int(num_examples)):
     if test_mode:
@@ -452,7 +452,7 @@ while j < (int(num_examples)):
         rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
     input_groups['Xe'].rate = rates
 #     print 'run number:', j+1, 'of', int(num_examples)
-    b.run(single_example_time, report='text')
+    b2.run(single_example_time, report='text')
 
     if j % update_interval == 0 and j > 0:
         assignments = get_new_assignments(result_monitor[:], input_numbers[j-update_interval : j])
@@ -468,7 +468,7 @@ while j < (int(num_examples)):
         input_intensity += 1
         for i,name in enumerate(input_population_names):
             input_groups[name+'e'].rate = 0
-        b.run(resting_time)
+        b2.run(resting_time)
     else:
         result_monitor[j%update_interval,:] = current_spike_count
         if test_mode and use_testing_set:
@@ -484,7 +484,7 @@ while j < (int(num_examples)):
                 print 'Classification performance', performance[:(j/float(update_interval))+1]
         for i,name in enumerate(input_population_names):
             input_groups[name+'e'].rate = 0
-        b.run(resting_time)
+        b2.run(resting_time)
         input_intensity = start_input_intensity
         j += 1
 
@@ -506,32 +506,32 @@ else:
 # plot results
 #------------------------------------------------------------------------------
 if rate_monitors:
-    b.figure(fig_num)
+    b2.figure(fig_num)
     fig_num += 1
     for i, name in enumerate(rate_monitors):
-        b.subplot(len(rate_monitors), 1, i)
-        b.plot(rate_monitors[name].times/b.second, rate_monitors[name].rate, '.')
-        b.title('Rates of population ' + name)
+        b2.subplot(len(rate_monitors), 1, i)
+        b2.plot(rate_monitors[name].times/b2.second, rate_monitors[name].rate, '.')
+        b2.title('Rates of population ' + name)
 
 if spike_monitors:
-    b.figure(fig_num)
+    b2.figure(fig_num)
     fig_num += 1
     for i, name in enumerate(spike_monitors):
-        b.subplot(len(spike_monitors), 1, i)
-        b.raster_plot(spike_monitors[name])
-        b.title('Spikes of population ' + name)
+        b2.subplot(len(spike_monitors), 1, i)
+        b2.raster_plot(spike_monitors[name])
+        b2.title('Spikes of population ' + name)
 
 if spike_counters:
-    b.figure(fig_num)
+    b2.figure(fig_num)
     fig_num += 1
     for i, name in enumerate(spike_counters):
-        b.subplot(len(spike_counters), 1, i)
-        b.plot(spike_counters['Ae'].count[:])
-        b.title('Spike count of population ' + name)
+        b2.subplot(len(spike_counters), 1, i)
+        b2.plot(spike_counters['Ae'].count[:])
+        b2.title('Spike count of population ' + name)
 
 plot_2d_input_weights()
-b.ioff()
-b.show()
+b2.ioff()
+b2.show()
 
 
 
