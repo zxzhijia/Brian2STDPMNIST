@@ -305,7 +305,9 @@ else:
     theta_plus_e = 0.05 * b2.mV
     scr_e = 'v = v_reset_e; theta += theta_plus_e; timer = 0*ms'
 offset = 20.0*b2.mV
-v_thresh_e = '(v>(theta - offset + ' + str(v_thresh_e) + ')) * (timer>refrac_e)'
+v_thresh_e_str = '(v>(theta - offset + v_thresh_e)) * (timer>refrac_e)'
+v_thresh_i_str = 'v>v_thresh_i'
+v_reset_i_str = 'v=v_reset_i'
 
 
 neuron_eqs_e = '''
@@ -348,8 +350,8 @@ spike_monitors = {}
 spike_counters = {}
 result_monitor = np.zeros((update_interval,n_e))
 
-neuron_groups['e'] = b2.NeuronGroup(n_e*len(population_names), neuron_eqs_e, threshold= v_thresh_e, refractory= refrac_e, reset= scr_e)
-neuron_groups['i'] = b2.NeuronGroup(n_i*len(population_names), neuron_eqs_i, threshold= v_thresh_i, refractory= refrac_i, reset= v_reset_i)
+neuron_groups['e'] = b2.NeuronGroup(n_e*len(population_names), neuron_eqs_e, threshold= v_thresh_e_str, refractory= refrac_e, reset= scr_e)
+neuron_groups['i'] = b2.NeuronGroup(n_i*len(population_names), neuron_eqs_i, threshold= v_thresh_i_str, refractory= refrac_i, reset= v_reset_i_str)
 
 
 #------------------------------------------------------------------------------
