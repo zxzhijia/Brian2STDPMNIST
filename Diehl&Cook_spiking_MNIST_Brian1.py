@@ -11,10 +11,9 @@ import time
 import os.path
 import scipy
 import cPickle as pickle
-import brian_no_units  #import it to deactivate unit checking --> This should NOT be done for testing/debugging
-import brian2 as b2
 from struct import unpack
-from brian import *
+from brian2 import *
+import brian2 as b2
 
 # specify the location of the MNIST data
 MNIST_data_path = ''
