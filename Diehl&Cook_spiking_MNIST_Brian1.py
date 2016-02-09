@@ -357,11 +357,11 @@ neuron_groups['i'] = b2.NeuronGroup(n_i*len(population_names), neuron_eqs_i, thr
 #------------------------------------------------------------------------------
 # create network population and recurrent connections
 #------------------------------------------------------------------------------
-for name in population_names:
+for subgroup_n, name in enumerate(population_names):
     print 'create neuron group', name
 
-    neuron_groups[name+'e'] = neuron_groups['e'].subgroup(n_e)
-    neuron_groups[name+'i'] = neuron_groups['i'].subgroup(n_i)
+    neuron_groups[name+'e'] = neuron_groups['e'][subgroup_n*n_e:(subgroup_n+1)*n_e]
+    neuron_groups[name+'i'] = neuron_groups['i'][subgroup_n*n_i:(subgroup_n+1)*n_e]
 
     neuron_groups[name+'e'].v = v_rest_e - 40. * b2.mV
     neuron_groups[name+'i'].v = v_rest_i - 40. * b2.mV
