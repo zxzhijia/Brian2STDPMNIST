@@ -385,8 +385,8 @@ for subgroup_n, name in enumerate(population_names):
                                                            post = eqs_stdp_post_ee, wmin=0., wmax= wmax_ee)
 
     print 'create monitors for', name
-    rate_monitors[name+'e'] = b2.PopulationRateMonitor(neuron_groups[name+'e'], bin = (single_example_time+resting_time)/b2.second)
-    rate_monitors[name+'i'] = b2.PopulationRateMonitor(neuron_groups[name+'i'], bin = (single_example_time+resting_time)/b2.second)
+    rate_monitors[name+'e'] = b2.PopulationRateMonitor(neuron_groups[name+'e'])
+    rate_monitors[name+'i'] = b2.PopulationRateMonitor(neuron_groups[name+'i'])
     spike_counters[name+'e'] = b2.SpikeCounter(neuron_groups[name+'e'])
 
     if record_spikes:
