@@ -273,7 +273,6 @@ v_thresh_i = -40. * b2.mV
 refrac_e = 5. * b2.ms
 refrac_i = 2. * b2.ms
 
-conn_structure = 'dense'
 weight = {}
 delay = {}
 input_population_names = ['X']
@@ -336,7 +335,7 @@ eqs_stdp_ee = '''
                 dpost1/dt  = -post1/(tc_post_1_ee)     : 1.0
                 dpost2/dt  = -post2/(tc_post_2_ee)     : 1.0
             '''
-eqs_stdp_pre_ee = 'pre = 1.; w -= nu_ee_pre * post1'
+eqs_stdp_pre_ee = 'pre = 1.; w -= nu_ee_pre * post1; g%s_post += w'
 eqs_stdp_post_ee = 'post2before = post2; w += nu_ee_post * pre * post2before; post1 = 1.; post2 = 1.'
 
 b2.ion()
@@ -374,9 +373,12 @@ for subgroup_n, name in enumerate(population_names):
     for conn_type in recurrent_conn_names:
         connName = name+conn_type[0]+name+conn_type[1]
         weightMatrix = get_matrix_from_file(weight_path + '../random/' + connName + ending + '.npy')
-        connections[connName] = b2.Connection(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]], structure= conn_structure,
-                                                    state = 'g'+conn_type[0])
-        connections[connName].connect(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]], weightMatrix)
+        pre = 'g%s_post += w' % conn_type[0]
+        model = 'w : 1'
+        connections[connName] = b2.Synapses(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]],
+                                                    model=model, pre=pre)
+        connections[connName].connect(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]])
+        connections[connName].w = weightMatrix[connections[connName].i, connections[connName].j]
 
     if ee_STDP_on:
         if 'ee' in recurrent_conn_names:
@@ -415,7 +417,7 @@ for name in input_connection_names:
     for connType in input_conn_names:
         connName = name[0] + connType[0] + name[1] + connType[1]
         weightMatrix = get_matrix_from_file(weight_path + connName + ending + '.npy')
-        connections[connName] = b2.Connection(input_groups[connName[0:2]], neuron_groups[connName[2:4]], structure= conn_structure,
+        connections[connName] = b2.Synapses(input_groups[connName[0:2]], neuron_groups[connName[2:4]],
                                                     state = 'g'+connType[0], delay=True, max_delay=delay[connType][1])
         connections[connName].connect(input_groups[connName[0:2]], neuron_groups[connName[2:4]], weightMatrix, delay=delay[connType])
 
