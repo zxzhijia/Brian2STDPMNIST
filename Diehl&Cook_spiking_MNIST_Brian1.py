@@ -419,10 +419,16 @@ for name in input_connection_names:
         weightMatrix = get_matrix_from_file(weight_path + connName + ending + '.npy')
         pre = 'g%s_post += w' % connType[0]
         model = 'w : 1'
+
         connections[connName] = b2.Synapses(input_groups[connName[0:2]], neuron_groups[connName[2:4]],
                                                     model=model, pre=pre)
-                                                    state = 'g'+connType[0], delay=True, max_delay=delay[connType][1])
-        connections[connName].connect(input_groups[connName[0:2]], neuron_groups[connName[2:4]], weightMatrix, delay=delay[connType])
+        minDelay = delay[connType][0]
+        maxDelay = delay[connType][1]
+        deltaDelay = maxDelay - minDelay
+        # TODO: test this
+        connections[connName].delay = 'minDelay + rand() * deltaDelay'
+        connections[connName].connect(input_groups[connName[0:2]], neuron_groups[connName[2:4]])
+        connections[connName].w = weightMatrix[connections[connName].i, connections[connName.j]]
 
     if ee_STDP_on:
         print 'create STDP for connection', name[0]+'e'+name[1]+'e'
