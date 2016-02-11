@@ -376,7 +376,7 @@ for subgroup_n, name in enumerate(population_names):
         model = 'w : 1'
         connections[connName] = b2.Synapses(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]],
                                                     model=model, pre=pre)
-        connections[connName].connect(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]])
+        connections[connName].connect(True) # all-to-all connection
         connections[connName].w = weightMatrix[connections[connName].i, connections[connName].j]
 
     if ee_STDP_on:
@@ -427,8 +427,8 @@ for name in input_connection_names:
         deltaDelay = maxDelay - minDelay
         # TODO: test this
         connections[connName].delay = 'minDelay + rand() * deltaDelay'
-        connections[connName].connect(input_groups[connName[0:2]], neuron_groups[connName[2:4]])
-        connections[connName].w = weightMatrix[connections[connName].i, connections[connName.j]]
+        connections[connName].connect(True) # all-to-all connection
+        connections[connName].w = weightMatrix[connections[connName].i, connections[connName].j]
 
     if ee_STDP_on:
         print 'create STDP for connection', name[0]+'e'+name[1]+'e'
