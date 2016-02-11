@@ -111,7 +111,8 @@ def get_2d_input_weights():
     num_values_col = n_e_sqrt*n_in_sqrt
     num_values_row = num_values_col
     rearranged_weights = np.zeros((num_values_col, num_values_row))
-    connMatrix = connections[name][:]
+    connMatrix = np.zeros((n_input, n_e))
+    connMatrix[connections[name].i, connections[name].j] = connections[name].w
     weight_matrix = np.copy(connMatrix)
 
     for i in xrange(n_e_sqrt):
