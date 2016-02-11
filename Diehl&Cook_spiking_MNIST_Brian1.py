@@ -436,9 +436,10 @@ for name in input_connection_names:
         maxDelay = delay[connType][1]
         deltaDelay = maxDelay - minDelay
         # TODO: test this
-        connections[connName].delay = 'minDelay + rand() * deltaDelay'
         connections[connName].connect(True) # all-to-all connection
+        connections[connName].delay = 'minDelay + rand() * deltaDelay'
         connections[connName].w = weightMatrix[connections[connName].i, connections[connName].j]
+
 
 #------------------------------------------------------------------------------
 # run the simulation and set inputs
