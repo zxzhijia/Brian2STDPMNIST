@@ -347,7 +347,6 @@ fig_num = 1
 neuron_groups = {}
 input_groups = {}
 connections = {}
-stdp_methods = {}
 rate_monitors = {}
 spike_monitors = {}
 spike_counters = {}
@@ -433,7 +432,7 @@ for name in input_connection_names:
             post = eqs_stdp_post_ee
 
         connections[connName] = b2.Synapses(input_groups[connName[0:2]], neuron_groups[connName[2:4]],
-                                                    model=model, pre=pre)
+                                                    model=model, pre=pre, post=post)
         minDelay = delay[connType][0]
         maxDelay = delay[connType][1]
         deltaDelay = maxDelay - minDelay
@@ -445,6 +444,13 @@ for name in input_connection_names:
 #------------------------------------------------------------------------------
 # run the simulation and set inputs
 #------------------------------------------------------------------------------
+
+net = Network()
+for obj_list in [neuron_groups, input_groups, connections, rate_monitors,
+        spike_monitors, spike_counters]:
+    for key in obj_list:
+        net.add(obj_list[key])
+
 previous_spike_count = np.zeros(n_e)
 assignments = np.zeros(n_e)
 input_numbers = [0] * num_examples
@@ -456,7 +462,7 @@ if do_plot_performance:
     performance_monitor, performance, fig_num, fig_performance = plot_performance(fig_num)
 for i,name in enumerate(input_population_names):
     input_groups[name+'e'].rates = 0 * Hz
-b2.run(0*second)
+net.run(0*second)
 j = 0
 while j < (int(num_examples)):
     if test_mode:
@@ -469,7 +475,7 @@ while j < (int(num_examples)):
         rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
     input_groups['Xe'].rates = rates * Hz
 #     print 'run number:', j+1, 'of', int(num_examples)
-    b2.run(single_example_time, report='text')
+    net.run(single_example_time, report='text')
 
     if j % update_interval == 0 and j > 0:
         assignments = get_new_assignments(result_monitor[:], input_numbers[j-update_interval : j])
@@ -485,7 +491,7 @@ while j < (int(num_examples)):
         input_intensity += 1
         for i,name in enumerate(input_population_names):
             input_groups[name+'e'].rates = 0 * Hz
-        b2.run(resting_time)
+        net.run(resting_time)
     else:
         result_monitor[j%update_interval,:] = current_spike_count
         if test_mode and use_testing_set:
@@ -501,7 +507,7 @@ while j < (int(num_examples)):
                 print 'Classification performance', performance[:(j/float(update_interval))+1]
         for i,name in enumerate(input_population_names):
             input_groups[name+'e'].rates = 0 * Hz
-        b2.run(resting_time)
+        net.run(resting_time)
         input_intensity = start_input_intensity
         j += 1
 
