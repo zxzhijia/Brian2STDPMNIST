@@ -452,7 +452,7 @@ if do_plot_performance:
     performance_monitor, performance, fig_num, fig_performance = plot_performance(fig_num)
 for i,name in enumerate(input_population_names):
     input_groups[name+'e'].rates = 0
-b2.run(0)
+b2.run(0*second)
 j = 0
 while j < (int(num_examples)):
     if test_mode:
