@@ -417,7 +417,10 @@ for name in input_connection_names:
     for connType in input_conn_names:
         connName = name[0] + connType[0] + name[1] + connType[1]
         weightMatrix = get_matrix_from_file(weight_path + connName + ending + '.npy')
+        pre = 'g%s_post += w' % connType[0]
+        model = 'w : 1'
         connections[connName] = b2.Synapses(input_groups[connName[0:2]], neuron_groups[connName[2:4]],
+                                                    model=model, pre=pre)
                                                     state = 'g'+connType[0], delay=True, max_delay=delay[connType][1])
         connections[connName].connect(input_groups[connName[0:2]], neuron_groups[connName[2:4]], weightMatrix, delay=delay[connType])
 
