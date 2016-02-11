@@ -96,12 +96,16 @@ def save_theta(ending = ''):
 def normalize_weights():
     for connName in connections:
         if connName[1] == 'e' and connName[3] == 'e':
-            connection = connections[connName][:]
+            len_source = len(connections[connName].source)
+            len_target = len(connections[connName].target)
+            connection = np.zeros((len_source, len_target))
+            connection[connections[connName].i, connections[connName].j] = connections[connName].w
             temp_conn = np.copy(connection)
             colSums = np.sum(temp_conn, axis = 0)
             colFactors = weight['ee_input']/colSums
             for j in xrange(n_e):#
-                connection[:,j] *= colFactors[j]
+                temp_conn[:,j] *= colFactors[j]
+            connections[connName].w = temp_conn[connections[connName].i, connections[connName].j]
 
 def get_2d_input_weights():
     name = 'XeAe'
