@@ -307,7 +307,7 @@ else:
     theta_plus_e = 0.05 * b2.mV
     scr_e = 'v = v_reset_e; theta += theta_plus_e; timer = 0*ms'
 offset = 20.0*b2.mV
-v_thresh_e_str = '(v>(theta - offset + v_thresh_e)) * (timer>refrac_e)'
+v_thresh_e_str = '(v>(theta - offset + v_thresh_e)) and (timer>refrac_e)'
 v_thresh_i_str = 'v>v_thresh_i'
 v_reset_i_str = 'v=v_reset_i'
 
