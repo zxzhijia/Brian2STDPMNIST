@@ -83,9 +83,8 @@ def get_matrix_from_file(fileName):
 def save_connections(ending = ''):
     print 'save connections'
     for connName in save_conns:
-        connMatrix = connections[connName][:]
-#         connListSparse = ([(i,j[0],j[1]) for i in xrange(connMatrix.shape[0]) for j in zip(connMatrix.rowj[i],connMatrix.rowdata[i])])
-        connListSparse = ([(i,j,connMatrix[i,j]) for i in xrange(connMatrix.shape[0]) for j in xrange(connMatrix.shape[1]) ])
+        conn = connections[connName]
+        connListSparse = zip(conn.i, conn.j, conn.w)
         np.save(data_path + 'weights/' + connName + ending, connListSparse)
 
 def save_theta(ending = ''):
