@@ -455,7 +455,7 @@ if not test_mode:
 if do_plot_performance:
     performance_monitor, performance, fig_num, fig_performance = plot_performance(fig_num)
 for i,name in enumerate(input_population_names):
-    input_groups[name+'e'].rates = 0
+    input_groups[name+'e'].rates = 0 * Hz
 b2.run(0*second)
 j = 0
 while j < (int(num_examples)):
@@ -467,7 +467,7 @@ while j < (int(num_examples)):
     else:
         normalize_weights()
         rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
-    input_groups['Xe'].rates = rates
+    input_groups['Xe'].rates = rates * Hz
 #     print 'run number:', j+1, 'of', int(num_examples)
     b2.run(single_example_time, report='text')
 
@@ -484,7 +484,7 @@ while j < (int(num_examples)):
     if np.sum(current_spike_count) < 5:
         input_intensity += 1
         for i,name in enumerate(input_population_names):
-            input_groups[name+'e'].rates = 0
+            input_groups[name+'e'].rates = 0 * Hz
         b2.run(resting_time)
     else:
         result_monitor[j%update_interval,:] = current_spike_count
@@ -500,7 +500,7 @@ while j < (int(num_examples)):
                 unused, performance = update_performance_plot(performance_monitor, performance, j, fig_performance)
                 print 'Classification performance', performance[:(j/float(update_interval))+1]
         for i,name in enumerate(input_population_names):
-            input_groups[name+'e'].rates = 0
+            input_groups[name+'e'].rates = 0 * Hz
         b2.run(resting_time)
         input_intensity = start_input_intensity
         j += 1
