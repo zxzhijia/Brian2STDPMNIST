@@ -329,13 +329,13 @@ neuron_eqs_i = '''
         dgi/dt = -gi/(2.0*ms)                                  : 1
         '''
 eqs_stdp_ee = '''
-                post2before                            : 1.0
-                dpre/dt   =   -pre/(tc_pre_ee)         : 1.0
-                dpost1/dt  = -post1/(tc_post_1_ee)     : 1.0
-                dpost2/dt  = -post2/(tc_post_2_ee)     : 1.0
+                post2before                            : 1
+                dpre/dt   =   -pre/(tc_pre_ee)         : 1
+                dpost1/dt  = -post1/(tc_post_1_ee)     : 1
+                dpost2/dt  = -post2/(tc_post_2_ee)     : 1
             '''
-eqs_stdp_pre_ee = 'pre = 1.; w -= nu_ee_pre * post1; g%s_post += w'
-eqs_stdp_post_ee = 'post2before = post2; w += nu_ee_post * pre * post2before; post1 = 1.; post2 = 1.'
+eqs_stdp_pre_ee = 'pre = 1.; w = clip(w + nu_ee_pre * post1, 0, wmax_ee)'
+eqs_stdp_post_ee = 'post2before = post2; w = clip(w + nu_ee_post * pre * post2before, 0, wmax_ee); post1 = 1.; post2 = 1.'
 
 b2.ion()
 fig_num = 1
@@ -372,17 +372,18 @@ for subgroup_n, name in enumerate(population_names):
     for conn_type in recurrent_conn_names:
         connName = name+conn_type[0]+name+conn_type[1]
         weightMatrix = get_matrix_from_file(weight_path + '../random/' + connName + ending + '.npy')
-        pre = 'g%s_post += w' % conn_type[0]
         model = 'w : 1'
+        pre = 'g%s_post += w' % conn_type[0]
+        post = ''
+        if ee_STDP_on:
+            if 'ee' in recurrent_conn_names:
+                model += eqs_stdp_ee
+                pre += '; ' + eqs_stdp_pre_ee
+                post = eqs_stdp_post_ee
         connections[connName] = b2.Synapses(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]],
-                                                    model=model, pre=pre)
+                                                    model=model, pre=pre, post=post)
         connections[connName].connect(True) # all-to-all connection
         connections[connName].w = weightMatrix[connections[connName].i, connections[connName].j]
-
-    if ee_STDP_on:
-        if 'ee' in recurrent_conn_names:
-            stdp_methods[name+'e'+name+'e'] = b2.STDP(connections[name+'e'+name+'e'], eqs=eqs_stdp_ee, pre = eqs_stdp_pre_ee,
-                                                           post = eqs_stdp_post_ee, wmin=0., wmax= wmax_ee)
 
     print 'create monitors for', name
     rate_monitors[name+'e'] = b2.PopulationRateMonitor(neuron_groups[name+'e'])
@@ -417,8 +418,14 @@ for name in input_connection_names:
     for connType in input_conn_names:
         connName = name[0] + connType[0] + name[1] + connType[1]
         weightMatrix = get_matrix_from_file(weight_path + connName + ending + '.npy')
-        pre = 'g%s_post += w' % connType[0]
         model = 'w : 1'
+        pre = 'g%s_post += w' % connType[0]
+        post = ''
+        if ee_STDP_on:
+            print 'create STDP for connection', name[0]+'e'+name[1]+'e'
+            model += eqs_stdp_ee
+            pre += '; ' + eqs_stdp_pre_ee
+            post = eqs_stdp_post_ee
 
         connections[connName] = b2.Synapses(input_groups[connName[0:2]], neuron_groups[connName[2:4]],
                                                     model=model, pre=pre)
@@ -429,12 +436,6 @@ for name in input_connection_names:
         connections[connName].delay = 'minDelay + rand() * deltaDelay'
         connections[connName].connect(True) # all-to-all connection
         connections[connName].w = weightMatrix[connections[connName].i, connections[connName].j]
-
-    if ee_STDP_on:
-        print 'create STDP for connection', name[0]+'e'+name[1]+'e'
-        stdp_methods[name[0]+'e'+name[1]+'e'] = b2.STDP(connections[name[0]+'e'+name[1]+'e'], eqs=eqs_stdp_ee, pre = eqs_stdp_pre_ee,
-                                                       post = eqs_stdp_post_ee, wmin=0., wmax= wmax_ee)
-
 
 #------------------------------------------------------------------------------
 # run the simulation and set inputs
