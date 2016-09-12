@@ -6,7 +6,9 @@ Status: It's still during translation.
 
 
 
-# Current problem, the brian 2 code can run without error report. But the test of the original paper's trained model is very low accuracy comparing with Brian 1 code. 
+# Current problem
+
+the brian 2 code can run without error report. But the test of the original paper's trained model is very low accuracy comparing with Brian 1 code. 
 
 Possible reasons
 1. Unit problem. The Brian 2 cannot use brian_no_unit. 
