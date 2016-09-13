@@ -14,9 +14,10 @@ import cPickle as pickle
 from struct import unpack
 from brian2 import *
 import brian2 as b2
+from brian2tools import *
 
 # specify the location of the MNIST data
-MNIST_data_path = ''
+MNIST_data_path = '/home/xu/Downloads/BMEClassProjectMaterials/Brian2STDPMNIST-master/'
 
 #------------------------------------------------------------------------------
 # functions
@@ -440,7 +441,7 @@ for i,name in enumerate(input_population_names):
     input_groups[name+'e'].rates = 0 * Hz
 net.run(0*second)
 j = 0
-while j < (int(num_examples)):
+while j < (int(num_examples)/5000):
     if test_mode:
         if use_testing_set:
             spike_rates = testing['x'][j%10000,:,:].reshape((n_input)) / 8. *  input_intensity
@@ -526,7 +527,40 @@ if spike_counters:
     b2.plot(spike_monitors['Ae'].count[:])
     b2.title('Spike count of population Ae')
 
+
+
+
+
 plot_2d_input_weights()
+
+plt.figure(5)
+
+subplot(3,1,1)
+
+brian_plot(connections['XeAe'].w)
+subplot(3,1,2)
+
+brian_plot(connections['AeAi'].w)
+
+subplot(3,1,3)
+
+brian_plot(connections['AiAe'].w)
+
+
+plt.figure(6)
+
+subplot(3,1,1)
+
+brian_plot(connections['XeAe'].delay)
+subplot(3,1,2)
+
+brian_plot(connections['AeAi'].delay)
+
+subplot(3,1,3)
+
+brian_plot(connections['AiAe'].delay)
+
+
 b2.ioff()
 b2.show()
 
