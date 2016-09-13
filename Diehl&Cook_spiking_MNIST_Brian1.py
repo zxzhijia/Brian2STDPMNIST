@@ -383,15 +383,6 @@ for subgroup_n, name in enumerate(population_names):
         spike_monitors[name+'e'] = b2.SpikeMonitor(neuron_groups[name+'e'])
         spike_monitors[name+'i'] = b2.SpikeMonitor(neuron_groups[name+'i'])
 
-if record_spikes:
-    b2.figure(fig_num)
-    fig_num += 1
-    b2.ion()
-    b2.subplot(211)
-    b2.raster_plot(spike_monitors['Ae'], refresh=1000*b2.ms, showlast=1000*b2.ms)
-    b2.subplot(212)
-    b2.raster_plot(spike_monitors['Ai'], refresh=1000*b2.ms, showlast=1000*b2.ms)
-
 
 #------------------------------------------------------------------------------
 # create input population and connections from input populations
