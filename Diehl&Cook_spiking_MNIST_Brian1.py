@@ -299,7 +299,7 @@ v_reset_i_str = 'v=v_reset_i'
 
 
 neuron_eqs_e = '''
-        dv/dt = ((v_rest_e - v) + (I_synE+I_synI) / nS) / (100*ms)  : volt
+        dv/dt = ((v_rest_e - v) + (I_synE+I_synI) / nS) / (100*ms)  : volt (unless refractory)
         I_synE = ge * nS *         -v                           : amp
         I_synI = gi * nS * (-100.*mV-v)                          : amp
         dge/dt = -ge/(1.0*ms)                                   : 1
@@ -312,7 +312,7 @@ else:
 neuron_eqs_e += '\n  dtimer/dt = 0.1  : second'
 
 neuron_eqs_i = '''
-        dv/dt = ((v_rest_i - v) + (I_synE+I_synI) / nS) / (10*ms)  : volt
+        dv/dt = ((v_rest_i - v) + (I_synE+I_synI) / nS) / (10*ms)  : volt (unless refractory)
         I_synE = ge * nS *         -v                           : amp
         I_synI = gi * nS * (-85.*mV-v)                          : amp
         dge/dt = -ge/(1.0*ms)                                   : 1
