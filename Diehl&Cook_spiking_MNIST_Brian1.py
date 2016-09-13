@@ -17,7 +17,7 @@ import brian2 as b2
 from brian2tools import *
 
 # specify the location of the MNIST data
-MNIST_data_path = '/home/xu/Downloads/BMEClassProjectMaterials/Brian2STDPMNIST-master/'
+MNIST_data_path = ''
 
 #------------------------------------------------------------------------------
 # functions
@@ -441,7 +441,7 @@ for i,name in enumerate(input_population_names):
     input_groups[name+'e'].rates = 0 * Hz
 net.run(0*second)
 j = 0
-while j < (int(num_examples)/5000):
+while j < (int(num_examples)):
     if test_mode:
         if use_testing_set:
             spike_rates = testing['x'][j%10000,:,:].reshape((n_input)) / 8. *  input_intensity
