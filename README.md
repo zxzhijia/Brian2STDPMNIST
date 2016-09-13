@@ -2,6 +2,12 @@
 
 This small project is to translate Brian 1 code from Paper "Unsupervised learning of digit recognition using spike-timing-dependent plasticity" written by PU Diehl to Brian 2 version. 
 
+
+## Prerequisite
+1. Brian 2 
+2. MNIST datasets, which can be downloaded from http://yann.lecun.com/exdb/mnist/. 
+   * The data set includes four gz files. Extract them after you downloaded them.
+
 ## Testing with pretrained weights:
 
 1. Run the main file "Diehl&Cook_spiking_MNIST_Brian2.py". It might take hours depending on your computer 
