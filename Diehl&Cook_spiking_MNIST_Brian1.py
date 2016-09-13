@@ -309,7 +309,7 @@ if test_mode:
     neuron_eqs_e += '\n  theta      :volt'
 else:
     neuron_eqs_e += '\n  dtheta/dt = -theta / (tc_theta)  : volt'
-neuron_eqs_e += '\n  dtimer/dt = 100.0  : second'
+neuron_eqs_e += '\n  dtimer/dt = 0.1  : second'
 
 neuron_eqs_i = '''
         dv/dt = ((v_rest_i - v) + (I_synE+I_synI) / nS) / (10*ms)  : volt
