@@ -391,7 +391,6 @@ pop_values = [0,0,0]
 for i,name in enumerate(input_population_names):
     input_groups[name+'e'] = b2.PoissonGroup(n_input, 0*Hz)
     rate_monitors[name+'e'] = b2.PopulationRateMonitor(input_groups[name+'e'])
-    spike_monitors[name+'e'] = b2.SpikeMonitor(input_groups[name+'e'])
 
 for name in input_connection_names:
     print 'create connections between', name[0], 'and', name[1]
