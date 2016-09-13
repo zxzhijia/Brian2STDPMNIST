@@ -370,7 +370,7 @@ for subgroup_n, name in enumerate(population_names):
                 pre += '; ' + eqs_stdp_pre_ee
                 post = eqs_stdp_post_ee
         connections[connName] = b2.Synapses(neuron_groups[connName[0:2]], neuron_groups[connName[2:4]],
-                                                    model=model, pre=pre, post=post)
+                                                    model=model, on_pre=pre, on_post=post)
         connections[connName].connect(True) # all-to-all connection
         connections[connName].w = weightMatrix[connections[connName].i, connections[connName].j]
 
@@ -417,7 +417,7 @@ for name in input_connection_names:
             post = eqs_stdp_post_ee
 
         connections[connName] = b2.Synapses(input_groups[connName[0:2]], neuron_groups[connName[2:4]],
-                                                    model=model, pre=pre, post=post)
+                                                    model=model, on_pre=pre, on_post=post)
         minDelay = delay[connType][0]
         maxDelay = delay[connType][1]
         deltaDelay = maxDelay - minDelay
