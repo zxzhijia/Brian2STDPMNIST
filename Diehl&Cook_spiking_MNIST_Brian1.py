@@ -509,7 +509,7 @@ if rate_monitors:
     b2.figure(fig_num)
     fig_num += 1
     for i, name in enumerate(rate_monitors):
-        b2.subplot(len(rate_monitors), 1, i)
+        b2.subplot(len(rate_monitors), 1, 1+i)
         b2.plot(rate_monitors[name].times/b2.second, rate_monitors[name].rate, '.')
         b2.title('Rates of population ' + name)
 
@@ -517,7 +517,7 @@ if spike_monitors:
     b2.figure(fig_num)
     fig_num += 1
     for i, name in enumerate(spike_monitors):
-        b2.subplot(len(spike_monitors), 1, i)
+        b2.subplot(len(spike_monitors), 1, 1+i)
         b2.raster_plot(spike_monitors[name])
         b2.title('Spikes of population ' + name)
 
@@ -525,7 +525,7 @@ if spike_counters:
     b2.figure(fig_num)
     fig_num += 1
     for i, name in enumerate(spike_counters):
-        b2.subplot(len(spike_counters), 1, i)
+        b2.subplot(len(spike_counters), 1, 1+i)
         b2.plot(spike_counters['Ae'].count[:])
         b2.title('Spike count of population ' + name)
 
