@@ -2,18 +2,14 @@
 
 This small project is to translate Brian 1 code from Paper "Unsupervised learning of digit recognition using spike-timing-dependent plasticity" written by PU Diehl to Brian 2 version. 
 
-Status: It's still during translation.
+# Testing with pretrained weights:
 
+1. Run the main file "Diehl&Cook_spiking_MNIST_Brian2.py". It might take hours depending on your computer 
+2. After previous step is finished, evaluate it by running "Diehl&Cook_MNIST_evaluation.py".
 
+# Training a new network:
 
-# Current problem
-
-the brian 2 code can run without error report. But the test of the original paper's trained model is very low accuracy comparing with Brian 1 code. 
-
-Possible reasons
-
-1. Unit problem. The Brian 2 cannot use brian_no_unit. 
-
-2. 
-
-If anyone wants to join the project or give any suggestion, I'll really appreciate it. 
+1. modify the main file "Diehl&Cook_spiking_MNIST_Brian2.py" by changing line 214 to "test_mode=False" and run the code. 
+2. The trained weights will be stored in folder "weights", which can be used to test the performance.
+3. In order to test your training, change line 214 back to "test_mode=True". 
+4. Run the "Diehl&Cook_spiking_MNIST_Brian2.py" code to get the results. 
