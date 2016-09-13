@@ -1,4 +1,4 @@
-# Unsupervised Learning of MNIST dataset by STDP
+# Brian 2 version of Unsupervised Learning of Digit recognition using STDP
 
 This small project is to translate Brian 1 code from Paper "Unsupervised learning of digit recognition using spike-timing-dependent plasticity" written by PU Diehl to Brian 2 version. 
 
