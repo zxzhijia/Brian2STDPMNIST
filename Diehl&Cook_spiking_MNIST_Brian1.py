@@ -444,13 +444,13 @@ j = 0
 while j < (int(num_examples)):
     if test_mode:
         if use_testing_set:
-            rates = testing['x'][j%10000,:,:].reshape((n_input)) / 8. *  input_intensity
+            spike_rates = testing['x'][j%10000,:,:].reshape((n_input)) / 8. *  input_intensity
         else:
-            rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
+            spike_rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
     else:
         normalize_weights()
-        rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
-    input_groups['Xe'].rates = rates * Hz
+        spike_rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
+    input_groups['Xe'].rates = spike_rates * Hz
 #     print 'run number:', j+1, 'of', int(num_examples)
     net.run(single_example_time, report='text')
 
