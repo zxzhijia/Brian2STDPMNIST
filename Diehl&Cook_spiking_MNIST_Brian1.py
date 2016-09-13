@@ -377,7 +377,7 @@ for subgroup_n, name in enumerate(population_names):
     print 'create monitors for', name
     rate_monitors[name+'e'] = b2.PopulationRateMonitor(neuron_groups[name+'e'])
     rate_monitors[name+'i'] = b2.PopulationRateMonitor(neuron_groups[name+'i'])
-    spike_counters[name+'e'] = b2.SpikeCounter(neuron_groups[name+'e'])
+    spike_counters[name+'e'] = b2.SpikeMonitor(neuron_groups[name+'e'])
 
     if record_spikes:
         spike_monitors[name+'e'] = b2.SpikeMonitor(neuron_groups[name+'e'])
@@ -510,7 +510,7 @@ if rate_monitors:
     fig_num += 1
     for i, name in enumerate(rate_monitors):
         b2.subplot(len(rate_monitors), 1, 1+i)
-        b2.plot(rate_monitors[name].times/b2.second, rate_monitors[name].rate, '.')
+        b2.plot(rate_monitors[name].t/b2.second, rate_monitors[name].rate, '.')
         b2.title('Rates of population ' + name)
 
 if spike_monitors:
@@ -518,16 +518,14 @@ if spike_monitors:
     fig_num += 1
     for i, name in enumerate(spike_monitors):
         b2.subplot(len(spike_monitors), 1, 1+i)
-        b2.raster_plot(spike_monitors[name])
+        b2.plot(spike_monitors[name].t/b2.ms, spike_monitors[name].i, '.')
         b2.title('Spikes of population ' + name)
 
 if spike_counters:
     b2.figure(fig_num)
     fig_num += 1
-    for i, name in enumerate(spike_counters):
-        b2.subplot(len(spike_counters), 1, 1+i)
-        b2.plot(spike_counters['Ae'].count[:])
-        b2.title('Spike count of population ' + name)
+    b2.plot(spike_monitors['Ae'].count[:])
+    b2.title('Spike count of population Ae')
 
 plot_2d_input_weights()
 b2.ioff()
